@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FC26 Score Tally</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  input, button { padding: 5px; margin: 5px; }
+  table { border-collapse: collapse; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  th { background: #eee; }
+</style>
+</head>
+<body>
+
+<h2>FC26 Score Tally</h2>
+
+<div>
+  <label>Player Name:</label>
+  <input type="text" id="playerName" />
+  <button onclick="addPlayer()">Add Player</button>
+</div>
+
+<div id="playersList"></div>
+
+<div id="matchesSection" style="display:none;">
+  <h3>Enter Match Scores</h3>
+  <div id="matchInputs"></div>
+  <button onclick="addMatch()">Add Match</button>
+</div>
+
+<h3>Total Scores</h3>
+<table id="scoreTable">
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Total Goals</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const players = [];
+  const matches = [];
+
+  function addPlayer() {
+    const nameInput = document.getElementById('playerName');
+    const name = nameInput.value.trim();
+    if(name && !players.includes(name)) {
+      players.push(name);
+      nameInput.value = '';
+      renderPlayers();
+      renderMatchInputs();
+      updateScores();
+      document.getElementById('matchesSection').style.display = 'block';
+    }
+  }
+
+  function renderPlayers() {
+    const listDiv = document.getElementById('playersList');
+    if(players.length === 0) {
+      listDiv.innerHTML = '<p>No players added yet.</p>';
+      return;
+    }
+    listDiv.innerHTML = '<p>Players: ' + players.join(', ') + '</p>';
+  }
+
+  function renderMatchInputs() {
+    const div = document.getElementById('matchInputs');
+    if(players.length < 2) {
+      div.innerHTML = '<p>Add at least two players to enter scores.</p>';
+      return;
+    }
+    // For the latest match add inputs for scores from each player to each other player (excluding self)
+    let html = '<table><thead><tr><th>Scoring Player</th><th>Opponent</th><th>Goals Scored</th></tr></thead><tbody>';
+    players.forEach(p1 => {
+      players.forEach(p2 => {
+        if(p1 !== p2) {
+          html += `<tr>
+            <td>${p1}</td>
+            <td>${p2}</td>
+            <td><input type="number" min="0" value="0" data-from="${p1}" data-to="${p2}" class="scoreInput" /></td>
+          </tr>`;
+        }
+      });
+    });
+    html += '</tbody></table>';
+    div.innerHTML = html;
+  }
+
+  function addMatch() {
+    // Gather scores from inputs for this match
+    const inputs = document.querySelectorAll('.scoreInput');
+    const matchScores = {};
+    players.forEach(p => matchScores[p] = 0);
+    inputs.forEach(input => {
+      const from = input.getAttribute('data-from');
+      const goals = parseInt(input.value) || 0;
+      matchScores[from] += goals;
+    });
+    matches.push(matchScores);
+    updateScores();
+    alert('Match scores added!');
+  }
+
+  function updateScores() {
+    // Sum all matches scores per player
+    const totals = {};
+    players.forEach(p => totals[p] = 0);
+    matches.forEach(match => {
+      players.forEach(p => {
+        totals[p] += match[p] || 0;
+      });
+    });
+    // Render table
+    const tbody = document.querySelector('#scoreTable tbody');
+    tbody.innerHTML = '';
+    players.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${p}</td><td>${totals[p]}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+</script>
+
+</body>
+</html>
