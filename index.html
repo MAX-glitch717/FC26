@@ -71,8 +71,19 @@
       margin-bottom: 8px;
     }
     .reset-btn:hover { background: #c10034;}
-    .actions { margin: 14px 0 0 0; display: flex; gap: 16px; justify-content: flex-end; }
-    .list { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; margin-top: 8px;}
+    .actions {
+      margin: 14px 0 0 0;
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+    }
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
     .tag {
       background: #24447a;
       padding: 7px 18px;
@@ -114,10 +125,30 @@
       font-size: 1.08rem;
       padding-left: 4px;
     }
-    .glow { animation: glow 1.4s infinite alternate;}
-    @keyframes glow { from { text-shadow: 0 0 18px #fffd80; } to { text-shadow: 0 0 2px #faffcf; } }
-    .winner { background: #5eed93; color: #122963; padding: 2px 10px; border-radius: 8px; font-weight: 900; margin-left: 8px; letter-spacing: 1px; font-size: 0.93rem;}
-    .edit-btn, .save-btn, .cancel-btn {
+    .glow {
+      animation: glow 1.4s infinite alternate;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 18px #fffd80;
+      }
+      to {
+        text-shadow: 0 0 2px #faffcf;
+      }
+    }
+    .winner {
+      background: #5eed93;
+      color: #122963;
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-weight: 900;
+      margin-left: 8px;
+      letter-spacing: 1px;
+      font-size: 0.93rem;
+    }
+    .edit-btn,
+    .save-btn,
+    .cancel-btn {
       background: #fffd77;
       color: #144955;
       padding: 4px 10px;
@@ -126,16 +157,126 @@
       font-weight: bold;
       cursor: pointer;
       border: none;
-      transition: background .15s;
+      transition: background 0.15s;
       margin-left: 2px;
     }
-    .edit-btn:hover, .save-btn:hover, .cancel-btn:hover { background: #e9f435;}
-    .disabled { opacity: 0.5; pointer-events: none;}
-    .error { color: #ff4b5c; font-weight: bold; font-size: 1.08rem; margin: 12px 0 0 0;}
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(40px);} to { opacity: 1; transform: translateY(0);}
+    .edit-btn:hover,
+    .save-btn:hover,
+    .cancel-btn:hover {
+      background: #e9f435;
     }
-    #modal { display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#123d7dee;z-index:999;align-items:center;justify-content:center;}
-    #modal > div { background:#fff; padding:32px 26px; border-radius:20px; max-width:360px; color:#123d7d;text-align:center; box-shadow:0 8px 32px rgba(10,20,60,0.16);}
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .error {
+      color: #ff4b5c;
+      font-weight: bold;
+      font-size: 1.08rem;
+      margin: 12px 0 0 0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #123d7dee;
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal > div {
+      background: #fff;
+      padding: 32px 26px;
+      border-radius: 20px;
+      max-width: 360px;
+      color: #123d7d;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(10, 20, 60, 0.16);
+    }
+
+    /* Responsive styles for mobile */
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px 10px;
+        padding: 24px 16px;
+        max-width: 100%;
+      }
+      .player-input,
+      .match-input {
+        flex-direction: column;
+        gap: 10px;
+      }
+      input,
+      button,
+      select {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1.1rem;
+        padding: 12px;
+      }
+      .actions {
+        justify-content: center;
+      }
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+        width: 100%;
+      }
+      thead tr {
+        display: none;
+      }
+      tbody tr {
+        background: rgba(30, 38, 88, 0.95);
+        margin-bottom: 12px;
+        border-radius: 12px;
+        padding: 12px;
+      }
+      tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 10px;
+        padding-right: 10px;
+        border: none;
+        border-bottom: 1px solid #3e4a89aa;
+      }
+      tbody td:last-child {
+        border-bottom: none;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #42e88c;
+      }
+      .edit-btn,
+      .save-btn,
+      .cancel-btn {
+        margin-left: 0;
+        margin-top: 8px;
+        width: 48%;
+      }
+      .match-input button {
+        padding: 14px;
+        font-weight: 700;
+      }
+    }
   </style>
 </head>
 <body>
@@ -164,7 +305,9 @@
       <div id="errorMsg" class="error" style="display:none;"></div>
       <table id="matchTable" style="display:none;">
         <thead>
-          <tr><th>Player 1</th><th>Score</th><th>Player 2</th><th>Score</th><th>Winner</th><th>Edit</th></tr>
+          <tr>
+            <th>Player 1</th><th>Score</th><th>Player 2</th><th>Score</th><th>Winner</th><th>Edit</th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -209,7 +352,7 @@
     function addPlayer() {
       const input = document.getElementById('playerName');
       const name = input.value.trim();
-      if(name && !players.includes(name)) {
+      if (name && !players.includes(name)) {
         players.push(name);
         input.value = '';
         input.focus();
@@ -220,18 +363,19 @@
     function updatePlayers() {
       const list = document.getElementById('playersList');
       list.innerHTML = '';
-      players.forEach(p => {
+      players.forEach((p) => {
         const tag = document.createElement('span');
         tag.className = 'tag';
         tag.textContent = p;
         list.appendChild(tag);
       });
-      document.getElementById('matchSection').style.display = (players.length >= 2 ? 'block' : 'none');
+      document.getElementById('matchSection').style.display =
+        players.length >= 2 ? 'block' : 'none';
       const s1 = document.getElementById('player1');
       const s2 = document.getElementById('player2');
       s1.innerHTML = '';
       s2.innerHTML = '';
-      players.forEach(p => {
+      players.forEach((p) => {
         let opt1 = document.createElement('option');
         opt1.value = opt1.textContent = p;
         let opt2 = document.createElement('option');
@@ -239,7 +383,7 @@
         s1.appendChild(opt1);
         s2.appendChild(opt2);
       });
-      if(players.length >= 2) {
+      if (players.length >= 2) {
         s2.selectedIndex = 1;
       }
     }
@@ -250,12 +394,12 @@
       let s2 = Number(document.getElementById('p2score').value);
       const error = document.getElementById('errorMsg');
       if (p1 && p2 && p1 !== p2 && !isNaN(s1) && !isNaN(s2)) {
-        error.style.display = "none";
+        error.style.display = 'none';
         let winner = null;
-        if(s1 > s2) winner = p1;
-        else if(s2 > s1) winner = p2;
-        matches.push({p1,p2,s1,s2,winner});
-        winCount[winner] = (winCount[winner]||0)+(winner?1:0);
+        if (s1 > s2) winner = p1;
+        else if (s2 > s1) winner = p2;
+        matches.push({ p1, p2, s1, s2, winner });
+        winCount[winner] = (winCount[winner] || 0) + (winner ? 1 : 0);
         saveData();
         updateMatchTable();
         updateLeaderboard();
@@ -266,38 +410,44 @@
         document.getElementById('p1score').value = '';
         document.getElementById('p2score').value = '';
       } else {
-        error.style.display = "block";
-        error.textContent = "Please enter valid scores (different players, non-negative numbers).";
+        error.style.display = 'block';
+        error.textContent = 'Please enter valid scores (different players, non-negative numbers).';
       }
     }
     function updateMatchTable() {
       const mt = document.getElementById('matchTable').querySelector('tbody');
       mt.innerHTML = '';
-      matches.forEach((match,i) => {
-        if(editingMatch === i) {
+      matches.forEach((match, i) => {
+        if (editingMatch === i) {
           mt.innerHTML += `<tr>
-            <td>
-              <select id="editp1">${players.map(p=>`<option${match.p1===p?' selected':''}>${p}</option>`).join('')}</select>
+            <td data-label="Player 1">
+              <select id="editp1">${players
+                .map((p) => `<option${match.p1 === p ? ' selected' : ''}>${p}</option>`)
+                .join('')}</select>
             </td>
-            <td><input id="edits1" type="number" min="0" value="${match.s1}"/></td>
-            <td>
-              <select id="editp2">${players.map(p=>`<option${match.p2===p?' selected':''}>${p}</option>`).join('')}</select>
+            <td data-label="Score"><input id="edits1" type="number" min="0" value="${match.s1}"/></td>
+            <td data-label="Player 2">
+              <select id="editp2">${players
+                .map((p) => `<option${match.p2 === p ? ' selected' : ''}>${p}</option>`)
+                .join('')}</select>
             </td>
-            <td><input id="edits2" type="number" min="0" value="${match.s2}"/></td>
-            <td></td>
-            <td>
+            <td data-label="Score"><input id="edits2" type="number" min="0" value="${match.s2}"/></td>
+            <td data-label="Winner"></td>
+            <td data-label="Edit">
               <button class="save-btn" onclick="saveEdit(${i})">Save</button>
               <button class="cancel-btn" onclick="cancelEdit()">Cancel</button>
             </td>
           </tr>`;
         } else {
           mt.innerHTML += `<tr>
-            <td>${match.p1}</td>
-            <td>${match.s1}</td>
-            <td>${match.p2}</td>
-            <td>${match.s2}</td>
-            <td>${(match.winner?(`<span class="winner">${match.winner}</span>`):'Draw')}</td>
-            <td>
+            <td data-label="Player 1">${match.p1}</td>
+            <td data-label="Score">${match.s1}</td>
+            <td data-label="Player 2">${match.p2}</td>
+            <td data-label="Score">${match.s2}</td>
+            <td data-label="Winner">${
+              match.winner ? `<span class="winner">${match.winner}</span>` : 'Draw'
+            }</td>
+            <td data-label="Edit">
               <button class="edit-btn" onclick="editMatch(${i})">Edit</button>
             </td>
           </tr>`;
@@ -313,14 +463,14 @@
       const newp2 = document.getElementById('editp2').value;
       const news1 = Number(document.getElementById('edits1').value);
       const news2 = Number(document.getElementById('edits2').value);
-      if(newp1!==newp2 && !isNaN(news1) && !isNaN(news2)) {
+      if (newp1 !== newp2 && !isNaN(news1) && !isNaN(news2)) {
         let prevWinner = matches[i].winner;
-        if(prevWinner) winCount[prevWinner]--;
+        if (prevWinner) winCount[prevWinner]--;
         let winner = null;
-        if(news1 > news2) winner = newp1;
-        else if(news2 > news1) winner = newp2;
-        matches[i] = {p1:newp1, p2:newp2, s1:news1, s2:news2, winner};
-        if(winner) winCount[winner] = (winCount[winner]||0)+1;
+        if (news1 > news2) winner = newp1;
+        else if (news2 > news1) winner = newp2;
+        matches[i] = { p1: newp1, p2: newp2, s1: news1, s2: news2, winner };
+        if (winner) winCount[winner] = (winCount[winner] || 0) + 1;
         editingMatch = null;
         saveData();
         updateMatchTable();
@@ -335,23 +485,23 @@
       const tb = document.getElementById('leaderTable');
       tb.innerHTML = '';
       let sorted = Array.from(players)
-        .map(p => ({p, w: winCount[p] || 0}))
-        .sort((a,b) => b.w - a.w || a.p.localeCompare(b.p));
+        .map((p) => ({ p, w: winCount[p] || 0 }))
+        .sort((a, b) => b.w - a.w || a.p.localeCompare(b.p));
       let first = sorted[0]?.w;
-      sorted.forEach(({p,w}) => {
+      sorted.forEach(({ p, w }) => {
         tb.innerHTML += `<tr>
           <td>${p}</td>
-          <td>${w} win${w!=1?"s":""}</td>
-          <td>${w===first && w>0?'<span class="reward glow">🏆 Top</span>':''}</td>
+          <td>${w} win${w != 1 ? 's' : ''}</td>
+          <td>${w === first && w > 0 ? '<span class="reward glow">🏆 Top</span>' : ''}</td>
         </tr>`;
       });
     }
     // Reset modal logic
     function confirmReset() {
-      document.getElementById('modal').style.display='flex';
+      document.getElementById('modal').style.display = 'flex';
     }
     function hideModal() {
-      document.getElementById('modal').style.display='none';
+      document.getElementById('modal').style.display = 'none';
     }
     function doReset() {
       players = [];
@@ -361,7 +511,7 @@
       localStorage.removeItem('fc26_players');
       localStorage.removeItem('fc26_matches');
       localStorage.removeItem('fc26_winCount');
-      document.getElementById('modal').style.display='none';
+      document.getElementById('modal').style.display = 'none';
       updatePlayers();
       updateMatchTable();
       updateLeaderboard();
@@ -372,15 +522,18 @@
       document.getElementById('errorMsg').style.display = 'none';
     }
     // Restore saved data on load
-    window.onload = function() {
+    window.onload = function () {
       loadData();
       updatePlayers();
       updateMatchTable();
       updateLeaderboard();
-      if (players.length >= 2) document.getElementById('matchSection').style.display = 'block';
-      if (matches.length > 0) document.getElementById('matchTable').style.display = 'table';
-      if (Object.keys(winCount).length > 0) document.getElementById('leaderSection').style.display = 'block';
-    }
+      if (players.length >= 2)
+        document.getElementById('matchSection').style.display = 'block';
+      if (matches.length > 0)
+        document.getElementById('matchTable').style.display = 'table';
+      if (Object.keys(winCount).length > 0)
+        document.getElementById('leaderSection').style.display = 'block';
+    };
   </script>
 </body>
 </html>
