@@ -1,129 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FC26 Score Tally</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  input, button { padding: 5px; margin: 5px; }
-  table { border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-  th { background: #eee; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FC26 Score & Rewards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(115deg, #192655 10%, #387adf 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 550px;
+      margin: 40px auto;
+      background: rgba(30, 40, 88, 0.98);
+      border-radius: 32px;
+      box-shadow: 0 8px 32px rgba(10,20,60,0.15);
+      padding: 32px 32px 20px 32px;
+    }
+    h1 {
+      font-size: 2.3rem;
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+      font-weight: 800;
+    }
+    h3 {
+      margin-top: 36px;
+      margin-bottom: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .fade-in {
+      animation: fadeIn 0.9s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .player-input,
+    .match-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    input, button, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+    }
+    button {
+      background: #5eed93;
+      color: #144955;
+      font-weight: bold;
+      box-shadow: 0 2px 8px 0 rgba(17, 179, 119, 0.09);
+      transition: background 0.23s, transform 0.18s;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3bf589;
+      transform: scale(1.06);
+    }
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+    .tag {
+      background: #203367;
+      padding: 7px 18px;
+      border-radius: 18px;
+      font-size: 1rem;
+      margin-bottom: 3px;
+      animation: fadeIn 0.7s;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+    th, td {
+      padding: 10px 0;
+      text-align: center;
+      border-bottom: 1px solid #3e4a89aa;
+    }
+    th {
+      color: #32ffe4;
+      font-weight: bold;
+      background: #214096aa;
+    }
+    .leaderboard {
+      background: #243572;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(62, 245, 204, 0.08);
+      margin-top: 18px;
+      transition: box-shadow 0.3s;
+      animation: fadeIn 1.2s;
+    }
+    .reward {
+      color: #fffd77;
+      font-weight: bold;
+      font-size: 1.14rem;
+      padding-left: 4px;
+    }
+    .glow {
+      animation: glow 1.3s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 18px #fffd80; }
+      to { text-shadow: 0 0 3px #faffcf; }
+    }
+    .winner {
+      background: #5eed93;
+      color: #122963;
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-weight: 900;
+      margin-left: 8px;
+      letter-spacing: 1px;
+      font-size: 0.95rem;
+    }
+  </style>
 </head>
 <body>
+  <div class="container fade-in">
+    <h1>FC26 Score & Rewards</h1>
+    <div>
+      <h3>Add Players</h3>
+      <div class="player-input">
+        <input id="playerName" type="text" placeholder="Enter player name" />
+        <button onclick="addPlayer()">Add</button>
+      </div>
+      <div class="list" id="playersList"></div>
+    </div>
+    <div id="matchSection" style="display:none;">
+      <h3>Generate & Add Scores</h3>
+      <form class="match-input" onsubmit="event.preventDefault(); addMatch();">
+        <select id="player1"></select> vs
+        <select id="player2"></select>
+        <input id="p1score" type="number" min="0" placeholder="P1 goals" size="3" />
+        <input id="p2score" type="number" min="0" placeholder="P2 goals" size="3" />
+        <button type="submit">Add Score</button>
+      </form>
+      <table id="matchTable" style="display:none;">
+        <thead>
+          <tr><th>Player 1</th><th>Score</th><th>Player 2</th><th>Score</th><th>Winner</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="leaderSection" style="display:none;">
+      <h3>Leaderboard (Wins)</h3>
+      <div class="leaderboard">
+        <table>
+          <thead>
+            <tr><th>Player</th><th>Wins</th><th class="reward">Reward ✨</th></tr>
+          </thead>
+          <tbody id="leaderTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    let players = [];
+    let matches = [];
+    let winCount = {};
 
-<h2>FC26 Score Tally</h2>
-
-<div>
-  <label>Player Name:</label>
-  <input type="text" id="playerName" />
-  <button onclick="addPlayer()">Add Player</button>
-</div>
-
-<div id="playersList"></div>
-
-<div id="matchesSection" style="display:none;">
-  <h3>Enter Match Scores</h3>
-  <div id="matchInputs"></div>
-  <button onclick="addMatch()">Add Match</button>
-</div>
-
-<h3>Total Scores</h3>
-<table id="scoreTable">
-  <thead>
-    <tr>
-      <th>Player</th>
-      <th>Total Goals</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<script>
-  const players = [];
-  const matches = [];
-
-  function addPlayer() {
-    const nameInput = document.getElementById('playerName');
-    const name = nameInput.value.trim();
-    if(name && !players.includes(name)) {
-      players.push(name);
-      nameInput.value = '';
-      renderPlayers();
-      renderMatchInputs();
-      updateScores();
-      document.getElementById('matchesSection').style.display = 'block';
+    function addPlayer() {
+      const input = document.getElementById('playerName');
+      const name = input.value.trim();
+      if(name && !players.includes(name)) {
+        players.push(name);
+        input.value = '';
+        input.focus();
+        updatePlayers();
+      }
     }
-  }
-
-  function renderPlayers() {
-    const listDiv = document.getElementById('playersList');
-    if(players.length === 0) {
-      listDiv.innerHTML = '<p>No players added yet.</p>';
-      return;
-    }
-    listDiv.innerHTML = '<p>Players: ' + players.join(', ') + '</p>';
-  }
-
-  function renderMatchInputs() {
-    const div = document.getElementById('matchInputs');
-    if(players.length < 2) {
-      div.innerHTML = '<p>Add at least two players to enter scores.</p>';
-      return;
-    }
-    // For the latest match add inputs for scores from each player to each other player (excluding self)
-    let html = '<table><thead><tr><th>Scoring Player</th><th>Opponent</th><th>Goals Scored</th></tr></thead><tbody>';
-    players.forEach(p1 => {
-      players.forEach(p2 => {
-        if(p1 !== p2) {
-          html += `<tr>
-            <td>${p1}</td>
-            <td>${p2}</td>
-            <td><input type="number" min="0" value="0" data-from="${p1}" data-to="${p2}" class="scoreInput" /></td>
-          </tr>`;
-        }
-      });
-    });
-    html += '</tbody></table>';
-    div.innerHTML = html;
-  }
-
-  function addMatch() {
-    // Gather scores from inputs for this match
-    const inputs = document.querySelectorAll('.scoreInput');
-    const matchScores = {};
-    players.forEach(p => matchScores[p] = 0);
-    inputs.forEach(input => {
-      const from = input.getAttribute('data-from');
-      const goals = parseInt(input.value) || 0;
-      matchScores[from] += goals;
-    });
-    matches.push(matchScores);
-    updateScores();
-    alert('Match scores added!');
-  }
-
-  function updateScores() {
-    // Sum all matches scores per player
-    const totals = {};
-    players.forEach(p => totals[p] = 0);
-    matches.forEach(match => {
+    function updatePlayers() {
+      const list = document.getElementById('playersList');
+      list.innerHTML = '';
       players.forEach(p => {
-        totals[p] += match[p] || 0;
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = p;
+        list.appendChild(tag);
       });
-    });
-    // Render table
-    const tbody = document.querySelector('#scoreTable tbody');
-    tbody.innerHTML = '';
-    players.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${p}</td><td>${totals[p]}</td>`;
-      tbody.appendChild(tr);
-    });
-  }
-</script>
 
+      // Only show match section if 2 or more players
+      document.getElementById('matchSection').style.display = (players.length >= 2 ? 'block' : 'none');
+      const s1 = document.getElementById('player1');
+      const s2 = document.getElementById('player2');
+      s1.innerHTML = '';
+      s2.innerHTML = '';
+      players.forEach(p => {
+        let opt1 = document.createElement('option');
+        opt1.value = opt1.textContent = p;
+        let opt2 = document.createElement('option');
+        opt2.value = opt2.textContent = p;
+        s1.appendChild(opt1);
+        s2.appendChild(opt2);
+      });
+      if(players.length >= 2) {
+        s2.selectedIndex = 1;
+      }
+    }
+
+    function addMatch() {
+      const p1 = document.getElementById('player1').value;
+      const p2 = document.getElementById('player2').value;
+      let s1 = Number(document.getElementById('p1score').value);
+      let s2 = Number(document.getElementById('p2score').value);
+      if (p1 && p2 && p1 !== p2 && !isNaN(s1) && !isNaN(s2)) {
+        let winner = null;
+        if(s1 > s2) winner = p1;
+        else if(s2 > s1) winner = p2;
+        matches.push({p1,p2,s1,s2,winner});
+        winCount[winner] = (winCount[winner]||0)+(winner?1:0);
+        updateMatchTable();
+        updateLeaderboard();
+        document.getElementById('matchTable').style.display = 'table';
+        document.getElementById('leaderSection').style.display = 'block';
+
+        // Animate row addition
+        const mt = document.getElementById('matchTable').querySelector('tbody');
+        mt.lastChild.classList.add('fade-in');
+        
+        // Reset inputs but keep selected players
+        document.getElementById('p1score').value = '';
+        document.getElementById('p2score').value = '';
+      }
+    }
+
+    function updateMatchTable() {
+      const mt = document.getElementById('matchTable').querySelector('tbody');
+      mt.innerHTML = '';
+      matches.forEach((match,i) => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `<td>${match.p1}</td>
+                        <td>${match.s1}</td>
+                        <td>${match.p2}</td>
+                        <td>${match.s2}</td>
+                        <td>${(match.winner?(`<span class="winner">${match.winner}</span>`):'Draw')}</td>`;
+        mt.appendChild(tr);
+      });
+    }
+    function updateLeaderboard() {
+      const tb = document.getElementById('leaderTable');
+      tb.innerHTML = '';
+      // Sort by win count desc, then name
+      let sorted = Array.from(players)
+        .map(p => ({p, w: winCount[p] || 0}))
+        .sort((a,b) => b.w - a.w || a.p.localeCompare(b.p));
+      let first = sorted[0]?.w;
+      sorted.forEach(({p,w}) => {
+        tb.innerHTML += `<tr>
+          <td>${p}</td>
+          <td>${w} win${w!=1?"s":""}</td>
+          <td>${w===first && w>0?'<span class="reward glow">🏆 Top</span>':''}</td>
+        </tr>`;
+      });
+    }
+  </script>
 </body>
 </html>
