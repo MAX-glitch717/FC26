@@ -4,50 +4,138 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FC26 Score & Rewards</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* ...same CSS as previous, plus these additions... */
-    .actions {
-      margin: 12px 0 0 0;
+    body {
+      background: linear-gradient(110deg, #192655 18%, #72aff3 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: 42px auto;
+      background: rgba(30, 38, 88, 0.96);
+      border-radius: 28px;
+      box-shadow: 0 6px 36px rgba(30,50,100,0.16);
+      padding: 38px 36px 22px 36px;
+      animation: fadeIn 1s;
+    }
+    h1 {
+      font-size: 2.4rem;
+      text-align: center;
+      margin-bottom: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+    h3 {
+      margin-top: 32px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .player-input,
+    .match-input {
       display: flex;
-      gap: 16px;
-      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    input, button, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+    }
+    button {
+      background: #42e88c;
+      color: #192655;
+      font-weight: bold;
+      box-shadow: 0 2px 12px 0 rgba(65, 235, 142, 0.09);
+      transition: background 0.22s, transform 0.18s;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #60ffd3;
+      transform: scale(1.07);
     }
     .reset-btn {
       background: #ed305e;
       color: #fff;
-      border: none;
-      padding: 10px 18px;
+      padding: 9px 18px;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
       transition: background .2s;
+      margin-bottom: 8px;
     }
     .reset-btn:hover { background: #c10034;}
+    .actions { margin: 14px 0 0 0; display: flex; gap: 16px; justify-content: flex-end; }
+    .list { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; margin-top: 8px;}
+    .tag {
+      background: #24447a;
+      padding: 7px 18px;
+      border-radius: 18px;
+      font-size: 1rem;
+      margin-bottom: 3px;
+      animation: fadeIn 0.9s;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: rgba(30,40,80,0.84);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px 0;
+      text-align: center;
+      border-bottom: 1px solid #3e4a89aa;
+    }
+    th {
+      color: #42e88c;
+      font-weight: bold;
+      background: #233a6faa;
+      font-size: 1.06rem;
+    }
+    .leaderboard {
+      background: #243572;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(62, 245, 204, 0.08);
+      margin-top: 19px;
+      transition: box-shadow 0.33s;
+      animation: fadeIn 1.1s;
+    }
+    .reward {
+      color: #fffd77;
+      font-weight: bold;
+      font-size: 1.08rem;
+      padding-left: 4px;
+    }
+    .glow { animation: glow 1.4s infinite alternate;}
+    @keyframes glow { from { text-shadow: 0 0 18px #fffd80; } to { text-shadow: 0 0 2px #faffcf; } }
+    .winner { background: #5eed93; color: #122963; padding: 2px 10px; border-radius: 8px; font-weight: 900; margin-left: 8px; letter-spacing: 1px; font-size: 0.93rem;}
     .edit-btn, .save-btn, .cancel-btn {
       background: #fffd77;
       color: #144955;
       padding: 4px 10px;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       font-weight: bold;
-      margin-left: 3px;
       cursor: pointer;
       border: none;
       transition: background .15s;
+      margin-left: 2px;
     }
-    .edit-btn:hover,
-    .save-btn:hover,
-    .cancel-btn:hover { background: #e9f435;}
-    .disabled {
-      opacity: 0.5; pointer-events: none;
+    .edit-btn:hover, .save-btn:hover, .cancel-btn:hover { background: #e9f435;}
+    .disabled { opacity: 0.5; pointer-events: none;}
+    .error { color: #ff4b5c; font-weight: bold; font-size: 1.08rem; margin: 12px 0 0 0;}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(40px);} to { opacity: 1; transform: translateY(0);}
     }
-    .error {
-      color: #ff4b5c;
-      font-weight: bold;
-      font-size: 1.12rem;
-      margin: 12px 0 0 0;
-    }
+    #modal { display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#123d7dee;z-index:999;align-items:center;justify-content:center;}
+    #modal > div { background:#fff; padding:32px 26px; border-radius:20px; max-width:360px; color:#123d7d;text-align:center; box-shadow:0 8px 32px rgba(10,20,60,0.16);}
   </style>
 </head>
 <body>
@@ -93,17 +181,9 @@
       </div>
     </div>
     <!-- Modal for Confirm Reset -->
-    <div id="modal" style="display:none; 
-         position:fixed;top:0;left:0;width:100%;height:100%;
-         background:#123d7dee;z-index:999;
-         align-items:center;justify-content:center;">
-      <div style="background:#fff;
-         padding:32px 26px;
-         border-radius:20px;
-         max-width:360px;
-         color:#123d7d;text-align:center;
-         box-shadow:0 8px 32px rgba(10,20,60,0.16);">
-        <p style="font-size:1.2rem;">Reset all data?</p>
+    <div id="modal">
+      <div>
+        <p style="font-size:1.17rem;">Reset all data?</p>
         <button onclick="doReset()" style="background:#ed305e;color:#fff;padding:8px 16px; border-radius:8px;">Yes, reset</button>
         <button onclick="hideModal()" style="margin-left:10px;background:#ccc;padding:8px 16px; border-radius:8px;">Cancel</button>
       </div>
@@ -114,7 +194,18 @@
     let matches = [];
     let winCount = {};
     let editingMatch = null;
-
+    // ---- persistence with localStorage ----
+    function saveData() {
+      localStorage.setItem('fc26_players', JSON.stringify(players));
+      localStorage.setItem('fc26_matches', JSON.stringify(matches));
+      localStorage.setItem('fc26_winCount', JSON.stringify(winCount));
+    }
+    function loadData() {
+      players = JSON.parse(localStorage.getItem('fc26_players') || '[]');
+      matches = JSON.parse(localStorage.getItem('fc26_matches') || '[]');
+      winCount = JSON.parse(localStorage.getItem('fc26_winCount') || '{}');
+    }
+    // ---- main app logic ----
     function addPlayer() {
       const input = document.getElementById('playerName');
       const name = input.value.trim();
@@ -122,6 +213,7 @@
         players.push(name);
         input.value = '';
         input.focus();
+        saveData();
         updatePlayers();
       }
     }
@@ -134,7 +226,6 @@
         tag.textContent = p;
         list.appendChild(tag);
       });
-
       document.getElementById('matchSection').style.display = (players.length >= 2 ? 'block' : 'none');
       const s1 = document.getElementById('player1');
       const s2 = document.getElementById('player2');
@@ -165,6 +256,7 @@
         else if(s2 > s1) winner = p2;
         matches.push({p1,p2,s1,s2,winner});
         winCount[winner] = (winCount[winner]||0)+(winner?1:0);
+        saveData();
         updateMatchTable();
         updateLeaderboard();
         document.getElementById('matchTable').style.display = 'table';
@@ -222,17 +314,15 @@
       const news1 = Number(document.getElementById('edits1').value);
       const news2 = Number(document.getElementById('edits2').value);
       if(newp1!==newp2 && !isNaN(news1) && !isNaN(news2)) {
-        // Remove previous win
         let prevWinner = matches[i].winner;
         if(prevWinner) winCount[prevWinner]--;
-
-        // Calculate new result
         let winner = null;
         if(news1 > news2) winner = newp1;
         else if(news2 > news1) winner = newp2;
         matches[i] = {p1:newp1, p2:newp2, s1:news1, s2:news2, winner};
         if(winner) winCount[winner] = (winCount[winner]||0)+1;
         editingMatch = null;
+        saveData();
         updateMatchTable();
         updateLeaderboard();
       }
@@ -241,7 +331,6 @@
       editingMatch = null;
       updateMatchTable();
     }
-
     function updateLeaderboard() {
       const tb = document.getElementById('leaderTable');
       tb.innerHTML = '';
@@ -269,6 +358,9 @@
       matches = [];
       winCount = {};
       editingMatch = null;
+      localStorage.removeItem('fc26_players');
+      localStorage.removeItem('fc26_matches');
+      localStorage.removeItem('fc26_winCount');
       document.getElementById('modal').style.display='none';
       updatePlayers();
       updateMatchTable();
@@ -278,6 +370,16 @@
       document.getElementById('leaderSection').style.display = 'none';
       document.getElementById('playersList').innerHTML = '';
       document.getElementById('errorMsg').style.display = 'none';
+    }
+    // Restore saved data on load
+    window.onload = function() {
+      loadData();
+      updatePlayers();
+      updateMatchTable();
+      updateLeaderboard();
+      if (players.length >= 2) document.getElementById('matchSection').style.display = 'block';
+      if (matches.length > 0) document.getElementById('matchTable').style.display = 'table';
+      if (Object.keys(winCount).length > 0) document.getElementById('leaderSection').style.display = 'block';
     }
   </script>
 </body>
