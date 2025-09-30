@@ -212,7 +212,7 @@
     @media (max-width: 600px) {
       .container {
         margin: 20px 10px;
-        padding: 24px 16px;
+        padding: 24px 6px;
         max-width: 100%;
       }
       .player-input,
@@ -224,46 +224,53 @@
       button,
       select {
         width: 100%;
-        box-sizing: border-box;
-        font-size: 1.1rem;
-        padding: 12px;
+        font-size: 1.14rem;
+        padding: 14px;
       }
       .actions {
         justify-content: center;
       }
       table,
       thead,
-      tbody,
-      th,
-      td,
-      tr {
+      tbody {
         display: block;
         width: 100%;
       }
-      thead tr {
+      thead {
         display: none;
       }
       tbody tr {
-        background: rgba(30, 38, 88, 0.95);
-        margin-bottom: 12px;
-        border-radius: 12px;
-        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(30, 38, 88, 0.96);
+        margin-bottom: 16px;
+        border-radius: 14px;
+        padding: 13px 11px;
+        box-shadow: 0 1px 6px 0 rgba(30, 80, 130, 0.11);
       }
       tbody td {
         display: flex;
         justify-content: space-between;
-        padding-left: 10px;
-        padding-right: 10px;
+        align-items: center;
+        padding: 8px 2px;
         border: none;
-        border-bottom: 1px solid #3e4a89aa;
+        font-size: 1.1rem;
+        font-weight: 500;
       }
-      tbody td:last-child {
-        border-bottom: none;
-      }
-      tbody td::before {
+      tbody td:before {
         content: attr(data-label);
-        font-weight: 700;
         color: #42e88c;
+        font-weight: bold;
+        padding-right: 20px;
+        flex: 1;
+        text-align: left;
+      }
+      tbody td > * {
+        flex: 2;
+        text-align: right;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+        margin-left: 10px;
       }
       .edit-btn,
       .save-btn,
@@ -337,7 +344,7 @@
     let matches = [];
     let winCount = {};
     let editingMatch = null;
-    // ---- persistence with localStorage ----
+    // Persistence for data storage
     function saveData() {
       localStorage.setItem('fc26_players', JSON.stringify(players));
       localStorage.setItem('fc26_matches', JSON.stringify(matches));
@@ -348,7 +355,7 @@
       matches = JSON.parse(localStorage.getItem('fc26_matches') || '[]');
       winCount = JSON.parse(localStorage.getItem('fc26_winCount') || '{}');
     }
-    // ---- main app logic ----
+    // Core logic
     function addPlayer() {
       const input = document.getElementById('playerName');
       const name = input.value.trim();
